@@ -19,7 +19,7 @@ echo -e "LANG=sv_SE.UTF-8\nLC_MESSAGES=en_US.UTF-8" > /etc/locale.conf
 
 # Setup hostname
 echo $1 > /etc/hostname
-echo -e "127.0.0.1\t\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t\t$1.$2\t$1  >> /etc/hosts
+echo -e "127.0.0.1\t\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t\t$1.$2\t$1"  >> /etc/hosts
 
 ##################################
 ## Install packages
@@ -52,6 +52,7 @@ mkdir /boot/EFI
 mount /dev/sda1 /boot/EFI
 grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
+echo "BOOTLOADER: DONE."
 
 ##################################
 ## Setup NetworkManager
@@ -62,12 +63,17 @@ systemctl enable NetworkManager
 ## Setup ssh-keys and settings
 ##################################
 echo "SETTING UP SSH-KEYS"
+
 # Install keys and start enable sshd.service
-curl https://github.com/jbarrskog.keys > /home/$3/ssh/authorized_keys
-# Is this needed?
-#ssh-keygen -C "$(whoami)@$(uname -n)-$(date -I)"
+mkdir /home/$3/.ssh
+curl https://github.com/jbarrskog.keys > /home/$3/.ssh/authorized_keys
+
+# Creating own RSA-keypair
+ssh-keygen -C "$(whoami)@$(uname -n)-$(date -I)"
+
 # Enable sshd on boot, and start immediately
 systemctl enable sshd --now
+echo "SSH-KEYS: DONE."
 
 ##################################
 ## Secure SSH according to ssh-audit.com/hardening_guides.html
@@ -87,9 +93,6 @@ echo "PermitRootLogin no" >> /etc/ssh/sshd_config
 
 # TODO: Add more sshd-settings?
 
-# Remove current keys (if any)
-rm /etc/ssh/ssh_host_*
-
 # Generate new keys
 ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ""
 ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ""
@@ -103,15 +106,15 @@ sed -i 's/^\#HostKey \/etc\/ssh\/ssh_host_\(rsa\|ed25519\)_key$/HostKey \/etc\/s
 
 echo -e "\n# Restrict key exchange, cipher, and MAC algorithms, as per sshaudit.com\n# hardening guide.\nKexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group-exchange-sha256\nCiphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr\nMACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com\nHostKeyAlgorithms ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,sk-ssh-ed25519@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,rsa-sha2-256,rsa-sha2-512,rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com" > /etc/ssh/sshd_config.d/ssh-audit_hardening.conf
 
-systemctl restart sshd
-
 ##################################
 ## Unmount and shutdown
 ##################################
 
-# Unmount
-umount -l /mnt
-echo "Done. Shutting down VM in 5 seconds.\nRemember to remove install-media, and prehaps make alterations in Proxmox settings:\nhttps://pve.proxmox.com/wiki/OVMF/UEFI_Boot_Entries"
-sleep 5 
-shutdown now
+# Quit the chroot
+exit
 
+# Unmount
+umount -R /mnt
+echo -e "Done. VM will reboot in 5 seconds.\nRemember to remove install-media, and prehaps make alterations in Proxmox settings:\nhttps://pve.proxmox.com/wiki/OVMF/UEFI_Boot_Entries"
+sleep 5
+shutdown now
