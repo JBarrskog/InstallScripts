@@ -38,7 +38,7 @@ pacman -S --noconfirm 	networkmanager \\
 			texinfo \\
 			htop \\
 			tmux \\
-			exe
+			exa
 
 ##################################
 ## Setup users
