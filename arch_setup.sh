@@ -28,14 +28,24 @@ echo -e "127.0.0.1\t\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t\t$1.$2\t$1"  >> /
 pacman -S --noconfirm grub efibootmgr dosfstools os-prober mtools
 
 # Packages
-pacman -S --noconfirm networkmanager vim openssh fish doas man-db man-pages texinfo htop tmux
+pacman -S --noconfirm 	networkmanager \\
+			vim \\
+			openssh \\
+			zsh \\
+			doas \\
+			man-db \\
+			man-pages \\
+			texinfo \\
+			htop \\
+			tmux \\
+			exe
 
 ##################################
 ## Setup users
 ##################################
 
 # Create user with username from input
-useradd -m -G wheel -s /bin/fish $3
+useradd -m -G wheel -s /bin/zsh $3
 
 # Change password of the new user
 echo "SET PASSWORD OF USER: $3:"
