@@ -79,7 +79,7 @@ mkdir /home/$3/.ssh
 curl https://github.com/jbarrskog.keys > /home/$3/.ssh/authorized_keys
 
 # Creating own RSA-keypair
-ssh-keygen -C "$(whoami)@$(uname -n)-$(date -I)"
+ssh-keygen -t ed25519 -f /home/$3/.ssh/id_ed25519 -N "" -C "$(whoami)@$(uname -n)-$(date -I)"
 
 # Enable sshd on boot, and start immediately
 systemctl enable sshd --now
