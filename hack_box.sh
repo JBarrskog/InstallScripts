@@ -86,7 +86,12 @@ fi
 if ! type amass > /dev/null; then
     # amass - OWASP
     print "\n\nInstalling OWASP/amass"
-    go get -v github.com/OWASP/Amass/cmd/amass
+    export GO111MODULE=on
+    go get -v -u github.com/OWASP/Amass/v3
+    cd $GOPATH/pkg/mod/github.com/\!o\!w\!a\!s\!p/\!amass/*
+    cd cmd/amass
+    go install
+    cd $CURRENT_PATH
 fi
     
 if ! type ffuf > /dev/null; then
@@ -121,7 +126,7 @@ if ! type masscan > /dev/null; then
         print "Found directory ~/builds/masscan, without successful installation. Removing directory..."
         rm -rf ~/builds/masscan
     fi
-    /usr/bin/zsh -ic git clone https://github.com/robertdavidgraham/masscan ~/builds/masscan
+    git clone https://github.com/robertdavidgraham/masscan ~/builds/masscan
     cd ~/builds/masscan
     make -j
     doas make install
@@ -147,6 +152,6 @@ if [ ! -d /usr/share/SecLists ]; then
     doas git clone https://github.com/danielmiessler/SecLists.git /usr/share/SecLists
 else
     cd /usr/share/SecLists
-    git pull
+    doas git pull
     cd $CURRENT_DIR
 fi
