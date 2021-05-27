@@ -52,7 +52,7 @@ echo "SET PASSWORD OF USER: $3:"
 passwd $3
 
 # Add user to doas
-echo "permit :wheel as root" > /etc/doas.conf
+echo "permit persist :wheel as root" > /etc/doas.conf
 
 ##################################
 ## Setup boot manager
