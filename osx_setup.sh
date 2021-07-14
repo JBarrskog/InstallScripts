@@ -34,6 +34,7 @@ setup_ssh() {
     title "Setting up SSH"
     mkdir "$HOME"/.ssh
     ssh-keygen -t ed25519 -f "$HOME"/.ssh/id_ed25519 -C "$(whoami)@$(uname -n)-$(date "+%Y-%m-%d")"
+    ssh-add -K "$HOME"/.ssh/id_ed25519
 }
 
 setup_git() {
