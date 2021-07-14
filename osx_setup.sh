@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-DOTFILES="$(pwd)"
 COLOR_GRAY="\033[1;38;5;243m"
 COLOR_BLUE="\033[1;34m"
 COLOR_GREEN="\033[1;32m"
@@ -29,6 +28,12 @@ info() {
 
 success() {
     echo -e "${COLOR_GREEN}$1${COLOR_NONE}"
+}
+
+setup_ssh() {
+    title "Setting up SSH"
+    mkdir "$HOME"/.ssh
+    ssh-keygen -t ed25519 -f "$HOME"/.ssh/id_ed25519 -C "$(whoami)@$(uname -n)-$(date "+%Y-%m-%d")"
 }
 
 setup_git() {
@@ -160,11 +165,8 @@ setup_macos() {
 }
 
 case "$1" in
-    backup)
-        backup
-        ;;
-    link)
-        setup_symlinks
+    ssh)
+        setup_ssh
         ;;
     git)
         setup_git
