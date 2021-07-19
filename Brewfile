@@ -12,6 +12,8 @@ cask "istat-menus"
 cask "obsidian"
 cask "alfred"
 cask "bettertouchtool"
+cask "discord"
+cask "spotify"
 
 # Fonts
 cask "font-fira-code"
