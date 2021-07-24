@@ -14,6 +14,8 @@ cask "alfred"
 cask "bettertouchtool"
 cask "discord"
 cask "spotify"
+cask "calibre"
+cask "adobe-digital-editions"
 
 # Fonts
 cask "font-fira-code"
@@ -29,6 +31,10 @@ mas "Xcode", id: 497799835
 mas "Deliveries", id: 290986013
 mas "1Password", id: 1333542190
 mas "Timery", id: 1425368544
+mas "WireGuard", id: 1451685025
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
+mas "Keynote", id: 409183694
 
 tap "homebrew/bundle"
 tap "homebrew/core"
