@@ -32,6 +32,15 @@ elif [ $DISTRO = arch ]; then
 	if ! type go > /dev/null; then
 	    doas pacman -Syu --noconfirm go
 	fi
+	if ! type ruby > /dev/null; then
+	    doas pacman -Syu --noconfirm ruby
+	fi
+	if ! type rsync > /dev/null; then
+	    doas pacman -Syu --noconfirm rsync
+	fi
+	if ! type lsb_release > /dev/null; then
+	    doas pacman -Syu --noconfirm lsb-release
+	fi
 else
 	print $DISTRO is not implemented yet...
 fi
@@ -118,7 +127,6 @@ if ! type subfinder > /dev/null; then
     go get -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder
 fi
     
-    
 if ! type masscan > /dev/null; then
     # masscan - robertdavidgraham
     print "\n\nInstalling robertdavidgraham/masscan"
@@ -149,9 +157,26 @@ if ! type nmap > /dev/null; then
 fi
 
 if [ ! -d /usr/share/SecLists ]; then
+    # SecLists - danielmiessler
+    print "\n\nInstalling danielmiessler/SecLists"
     doas git clone https://github.com/danielmiessler/SecLists.git /usr/share/SecLists
 else
     cd /usr/share/SecLists
     doas git pull
     cd $CURRENT_DIR
+fi
+
+if ! type interlace > /dev/null; then
+    # Interlace - codingo
+    print "\n\nInstalling codingo/Interlace"
+    cd $HOME/builds
+    git clone git@github.com:codingo/Interlace.git
+    cd Interlace
+    doas python3 setup.py install
+    cd $CURRENT_DIR
+fi
+
+if ! type axiom > /dev/null; then
+    # axiom - pry0cc
+    bash <(curl -s https://raw.githubusercontent.com/JBarrskog/axiom/master/interact/axiom-configure)
 fi
