@@ -1,3 +1,4 @@
+#!/bin/bash
 # Run this script after "arch-chroot /mnt"
 
 
@@ -19,7 +20,7 @@ locale-gen
 echo -e "LANG=sv_SE.UTF-8\nLC_MESSAGES=en_GB.UTF-8" > /etc/locale.conf
 
 # Setup hostname
-echo $1 > /etc/hostname
+echo "$1" > /etc/hostname
 echo -e "127.0.0.1\t\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t\t$1.$2\t$1"  >> /etc/hosts
 
 ##################################
@@ -46,11 +47,11 @@ pacman -S --noconfirm 	networkmanager \\
 ##################################
 
 # Create user with username from input
-useradd -m -G wheel -s /bin/zsh $3
+useradd -m -G wheel -s /bin/zsh "$3"
 
 # Change password of the new user
 echo "SET PASSWORD OF USER: $3:"
-passwd $3
+passwd "$3"
 
 # Add user to doas
 echo "permit persist :wheel as root" > /etc/doas.conf
@@ -76,14 +77,14 @@ systemctl enable NetworkManager
 echo "SETTING UP SSH-KEYS"
 
 # Install keys and start enable sshd.service
-mkdir /home/$3/.ssh
-chown $3 /home/$3/.ssh
-curl https://github.com/jbarrskog.keys > /home/$3/.ssh/authorized_keys
+mkdir /home/"$3"/.ssh
+chown "$3" /home/"$3"/.ssh
+curl https://github.com/jbarrskog.keys > /home/"$3"/.ssh/authorized_keys
 
 # Creating own RSA-keypair
-ssh-keygen -t ed25519 -f /home/$3/.ssh/id_ed25519 -N "" -C "$(whoami)@$(uname -n)-$(date -I)"
-chown $3 /home/$3/.ssh/id_ed25519
-chown $3 /home/$3/.ssh/id_ed25519.pub
+ssh-keygen -t ed25519 -f /home/"$3"/.ssh/id_ed25519 -N "" -C "$(whoami)@$(uname -n)-$(date -I)"
+chown "$3" /home/"$3"/.ssh/id_ed25519
+chown "$3" /home/"$3"/.ssh/id_ed25519.pub
 
 # Enable sshd on boot, and start immediately
 systemctl enable sshd --now
