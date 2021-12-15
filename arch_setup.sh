@@ -13,10 +13,11 @@ hwclock --systohc
 # Adding locales
 sed -i 's/^\#en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/g' /etc/locale.gen
 sed -i 's/^\#sv_SE.UTF-8 UTF-8$/sv_SE.UTF-8 UTF-8/g' /etc/locale.gen
+sed -i 's/^\#en_GB.UTF-8 UTF-8$/en_GB.UTF-8 UTF-8/g' /etc/locale.gen
 locale-gen
 
 # Create locale.conf
-echo -e "LANG=sv_SE.UTF-8\nLC_MESSAGES=en_US.UTF-8" > /etc/locale.conf
+echo -e "LANG=sv_SE.UTF-8\nLC_MESSAGES=en_GB.UTF-8" > /etc/locale.conf
 
 # Setup hostname
 echo "$1" > /etc/hostname
@@ -53,7 +54,7 @@ echo "SET PASSWORD OF USER: $3:"
 passwd "$3"
 
 # Add user to doas
-echo "permit :wheel as root" > /etc/doas.conf
+echo "permit persist :wheel as root" > /etc/doas.conf
 
 ##################################
 ## Setup boot manager
