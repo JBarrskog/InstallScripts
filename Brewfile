@@ -20,6 +20,7 @@ cask "transmission"
 cask "firefox"
 cask "openvpn"
 cask "wireshark"
+cask "clion"
 
 # Fonts
 cask "font-fira-code"
