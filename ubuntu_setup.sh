@@ -52,7 +52,7 @@ sudo ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ""
 sudo ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ""
 
 # Remove small Diffie-Hellman moduli
-sudo awk '$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe
+sudo awk '$5 >= 3071' /etc/ssh/moduli | sudo tee /etc/ssh/moduli.safe > /dev/null
 sudo mv /etc/ssh/moduli.safe /etc/ssh/moduli
 
 # Enable the RSA and ED25519 keys
