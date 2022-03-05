@@ -33,7 +33,8 @@ sudo apt install openssh-server
 ## Configure OpenSSH
 ##################################
 sudo rm /etc/ssh/sshd_config
-sudo touch /etc/ssh/sshd_config
+
+echo "Include /etc/ssh/sshd_config.d/*.conf" | sudo tee /etc/ssh/sshd_config > /dev/null
 
 echo "PasswordAuthentication no" | sudo tee -a /etc/ssh/sshd_config > /dev/null
 echo "PermitEmptyPasswords no" | sudo tee -a /etc/ssh/sshd_config > /dev/null
