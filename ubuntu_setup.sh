@@ -11,10 +11,41 @@ install qemu-guest-agent
 systemctl start qemu-guest-agent
 
 ##################################
+## Hardening
+##################################
+chmod -R 750 /home/$USER
+chmod -R 700 /home/$USER/.ssh
+chmod -R 600 /home/$USER/.ssh/authorized_keys
+chmod 600 /etc/at.deny
+chmod 600 /etc/crontab
+chmod 600 /etc/ssh/sshd_config
+chmod 700 /etc/cron.d
+chmod 700 /etc/cron.hourly
+chmod 700 /etc/cron.daily
+chmod 700 /etc/cron.weekly
+chmod 700 /etc/cron.monthly
+
+# Disable core dump
+sed -i 's/\#\*               soft    core            0/\*                soft    core            0\n\*                hard    core            0/g' /etc/security/limits.conf
+
+##################################
 ## Install Open SSH
 ##################################
 apt install openssh-server
 
+##################################
+## Configure OpenSSH
+##################################
+rm /etc/ssh/sshd_config
+touch /etc/ssh/sshd_config
+
+echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
+echo "PermitEmptyPasswords no" >> /etc/ssh/sshd_config
+echo "PermitRootLogin no" >> /etc/ssh/sshd_config
+echo "X11Forwarding no" >> /etc/ssh/sshd_config
+
+echo "HostKey /etc/ssh/ssh_host_rsa_key" >> /etc/ssh/sshd_config
+echo "HostKey /etc/ssh/ssh_host_ed25519_key" >> /etc/ssh/sshd_config
 ##################################
 ## Secure SSH according to ssh-audit.com/hardening_guides.html
 ##################################
@@ -25,9 +56,9 @@ ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ""
 
 # Remove small Diffie-Hellman moduli
 awk '$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe
+mv /etc/ssh/moduli.safe /etc/ssh/moduli
 
 # Enable the RSA and ED25519 keys
-mv /etc/ssh/moduli.safe /etc/ssh/moduli
 sed -i 's/^\#HostKey \/etc\/ssh\/ssh_host_\(rsa\|ed25519\)_key$/HostKey \/etc\/ssh\/ssh_host_\1_key/g' /etc/ssh/sshd_config
 
 # Restrict supported key exchange, cipher, and MAC algorithms
