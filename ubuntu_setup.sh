@@ -1,10 +1,38 @@
 #!/usr/bin/bash
 
+sudo apt update 
+sudo apt upgrade
+
 ##################################
 ## Install QEMU guest agent (for Proxmox VM)
 ##################################
 sudo apt install qemu-guest-agent
 sudo systemctl start qemu-guest-agent
+
+##################################
+## Set locale
+##################################
+sudo sed -i 's/^\# en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/g' /etc/locale.gen
+sudo sed -i 's/^\# sv_SE.UTF-8 UTF-8$/sv_SE.UTF-8 UTF-8/g' /etc/locale.gen
+sudo sed -i 's/^\# en_GB.UTF-8 UTF-8$/en_GB.UTF-8 UTF-8/g' /etc/locale.gen
+sudo locale-gen
+
+sudo update-locale --reset LANG="en_US.UTF-8" LC_COLLATE="en_US.UTF-8" LC_CTYPE="sv_SE.UTF-8" LC_MESSAGES="en_GB.UTF-8" LC_MONETARY="en_US.UTF-8" LC_NUMERIC="en_US.UTF-8" LC_TIME="en_US.UTF-8"
+
+##################################
+## Configuring install
+##################################
+sudo apt install zsh
+sudo apt install exa
+sudo apt install texinfo
+sudo apt install man-db
+
+# Set up alias, clone bare repo and reset it (this was necessary once...)
+alias config='/usr/bin/git --git-dir=/home/$USER/dotfiles --work-tree=/home/$USER'
+git clone --bare https://github.com/JBarrskog/dotfiles.git $HOME/dotfiles
+config checkout
+
+chsh -s /bin/zsh $USER
 
 ##################################
 ## Hardening
