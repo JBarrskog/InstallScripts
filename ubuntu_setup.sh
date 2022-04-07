@@ -29,7 +29,7 @@ sudo apt install man-db
 
 # Set up alias, clone bare repo and reset it (this was necessary once...)
 echo "alias config='/usr/bin/git --git-dir=/home/$USER/dotfiles --work-tree=/home/$USER'" >> .bashrc
-git clone --bare https://github.com/JBarrskog/dotfiles.git $HOME/dotfiles
+git clone --bare https://github.com/JBarrskog/dotfiles.git /home/$HOME/dotfiles
 source .bashrc
 config checkout
 
