@@ -1,0 +1,54 @@
+- name: Hardening of VM
+  hosts: "*"
+  tasks:
+    - name: hardening - 750 on /home/$USER
+      shell: >
+        chmod -R 750 /home/$USER
+      become: true
+      become_user: "{{ lookup('env', 'USER') }}"
+    - name: hardening - 700 on /home/$USER/.ssh
+      shell: >
+        chmod -R 700 /home/$USER/.ssh
+      become_user: "{{ lookup('env', 'USER') }}"
+      become: true
+    - name: hardening - 600 on /home/$USER/.ssh/authorized_keys
+      shell: >
+        chmod -R 600 /home/$USER/.ssh/authorized_keys
+      become: true
+      become_user: "{{ lookup('env', 'USER') }}"
+    - name: hardening - 600 on /etc/at.deny
+      shell: >
+        chmod -R 600 /etc/at.deny
+      become: true
+    - name: hardening - 600 on /etc/crontab
+      shell: >
+        chmod -R 600 /etc/crontab
+      become: true
+    - name: hardening - 600 on /etc/ssh/sshd_config
+      shell: >
+        chmod -R 600 /etc/ssh/sshd_config
+      become: true
+    - name: hardening - 700 on /etc/cron.d
+      shell: >
+        chmod -R 700 /etc/cron.d
+      become: true
+    - name: hardening - 700 on /etc/cron.hourly
+      shell: >
+        chmod -R 700 /etc/cron.hourly
+      become: true
+    - name: hardening - 700 on /etc/cron.daily
+      shell: >
+        chmod -R 700 /etc/cron.daily
+      become: true
+    - name: hardening - 700 on /etc/cron.weekly
+      shell: >
+        chmod -R 700 /etc/cron.weekly
+      become: true
+    - name: hardening - 700 on /etc/cron.monthly
+      shell: >
+        chmod -R 700 /etc/cron.monthly
+      become: true
+    - name: hardening - disable core dump
+      shell: >
+        sed -i 's/\#\*               soft    core            0/\*                soft    core            0\n\*                hard    core            0/g' /etc/security/limits.conf
+      become: true

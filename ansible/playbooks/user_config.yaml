@@ -1,0 +1,50 @@
+- name: User configuration
+  hosts: "*"
+  tasks:
+    - name: Install packages (Ubuntu 20.04 LTS)
+      apt:
+        pkg:
+          - zsh
+          - texinfo
+          - man-db
+          - unzip
+        state: present
+        update_cache: true
+      become: true
+      when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "20"
+    - name: Install packages (greater than Ubuntu 20.04)
+      apt:
+        pkg:
+          - zsh
+          - exa 
+          - texinfo
+          - mandb
+          - unzip
+        state: present
+        update_cache: true
+      become: true
+      when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] > "20"
+    - name: Install exa (if not already installed)
+      shell: >
+        wget https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip &&
+        unzip exa-linux-x86_64-v0.10.0.zip &&
+        cp bin/exa /usr/local/bin/exa &&
+        cp man/* /usr/share/man/man1/ &&
+        cp completions/exa.zsh /usr/local/share/zsh/site-functions &&
+        rm -rf bin man completions exa-linux-x86_64-v0.10.0.zip
+      become: true
+      when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "20"
+    - name: Setup dotfiles
+      shell: >
+        echo "alias config='/usr/bin/git --git-dir=/home/$USER/dotfiles --work-tree=/home/$USER'" >> .bashrc &&
+        git clone --bare https://github.com/JBarrskog/dotfiles.git /home/$USER/dotfiles &&
+        /usr/bin/git --git-dir=/home/$USER/dotfiles --work-tree=/home/$USER checkout
+        #source .bashrc &&
+        #config checkout
+      args:
+        creates: /home/$USER/dotfiles
+      become_user: "{{ lookup('env', 'USER') }}"
+    - name: Change default shell
+      shell: >
+        chsh -s /bin/zsh "{{ lookup('env', 'USER') }}"
+      become: true
